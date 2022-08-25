@@ -1,0 +1,35 @@
+Nexts.js is a framework built on top of React.
+It gives the ability of building scalable apps by allowing you to render content on the server
+
+Next.js is a fullstack framework!!
+Next.js provides us with a node server out of the box.
+
+With React you always render the content on the client side (there is no server)
+With Next.js you can choose to that on the client side, on the server side or a mix of both.
+
+Rendering techniques:
+
+- Static Side Generation : for static content
+- Server Side Rendering: if you want fresh content on page refresh => Each time you refresh the page, you render the content et refreshing the data again
+- Incremental Site Regeneration: this is the best of both world.
+
+Performance:
+
+- Code Splitting (several bundles)
+- Minifying Files (i.e. minifying the code)
+- Image Optimization (render different file sizes based on the size of the viewport)
+- Pre-fetching Assets
+
+File Based Routing
+
+- the api folder hosts all the backend logic (any route is the api folder is a server site route)
+
+SEO
+
+- Next.js give you the ability to add SEO easily to your site without adding any specific baggage.
+
+Serveless Functions
+
+- You can essentially run your Node.js code in the same code base as your React code, and it all lives inside the pages directly.
+- Anything under the API folder also had a node server configured already
+- It's called severless bc you only need the server to perform the specific task asked, and if there is no activity, the server is going to shutdown
