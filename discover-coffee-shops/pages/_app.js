@@ -16,3 +16,5 @@ function MyApp({ Component, pageProps }) {
 }
 
 export default MyApp;
+
+//_app.js add stuff to the body but can't access the head (or the html document itself)

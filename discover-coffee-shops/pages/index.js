@@ -1,5 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
+// Next.js will download the images as you scroll down
 
 import Banner from "../components/banner";
 import styles from "../styles/Home.module.css";
@@ -25,6 +26,9 @@ export default function Home() {
           buttonText="View stores nearby"
           handleOnClick={handleOnBannerBtnClick}
         />
+        <div className={styles.heroImage}>
+          <Image src="/static/hero-image.png" width={700} height={400} />
+        </div>
       </main>
     </div>
   );
