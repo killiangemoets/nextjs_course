@@ -3,6 +3,7 @@ import Image from "next/image";
 // Next.js will download the images as you scroll down
 
 import Banner from "../components/banner";
+import Card from "../components/card";
 import styles from "../styles/Home.module.css";
 
 // it's the default route bc the file is called index
@@ -29,7 +30,15 @@ export default function Home() {
         <div className={styles.heroImage}>
           <Image src="/static/hero-image.png" width={700} height={400} />
         </div>
+        <Card
+          name="DarkHorse Coffee"
+          imgUrl="/static/hero-image.png"
+          href="/coffee-store/darkhorse-coffee"
+        />
       </main>
     </div>
   );
 }
+
+// In a React app, Javascript is responsible for rendering all the content => so pre-render on an empty page => bad for SEO
+// in a Next.js app, the server is responsible for rendering a pre-rendered content => better for SEO
