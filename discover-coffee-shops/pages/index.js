@@ -20,7 +20,7 @@ import coffeeStoresData from "../data/coffee-stores.json";
 // - won't be included in client side bundle
 // - on dev mode, runs on client and server side
 export async function getStaticProps(context) {
-  console.log("hi from getStaticProps"); // will be seen on the terminal bc it's on the server side
+  // console.log("hi from getStaticProps"); // will be seen on the terminal bc it's on the server side
   // const data = fetch(coffeeStores)... but we don't need a fetch request here, we already have the coffee stores from the json file
   return {
     props: {
@@ -33,7 +33,7 @@ export async function getStaticProps(context) {
 // it's the default route bc the file is called index
 export default function Home(props) {
   // console.log("styles for Home", styles);
-  console.log(props);
+  // console.log(props);
 
   const handleOnBannerBtnClick = () => {
     console.log("click");
