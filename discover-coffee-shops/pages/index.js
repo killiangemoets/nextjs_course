@@ -6,9 +6,34 @@ import Banner from "../components/banner";
 import Card from "../components/card";
 import styles from "../styles/Home.module.css";
 
+import coffeeStoresData from "../data/coffee-stores.json";
+
+////// We use STATIC GENERATION (SSG) (with external data) //////
+// We will pre-render this content usigin static generation. To do that, we will download this content in advance and we will store it a CDN.
+// Storing in a CDN is taking care of by Next.js, but we need to implement a function that would allow us to store the coffee shops on the CDN
+// => So when someone come to the app and try to access these coffee shops, they are going to get the cached version,i.e. the pre-rendered version and Next.js is not going to redownload this data
+
+// If you export a function called getStaticProps (Static Site Generation) from a page, Next.js will pre-render this page at build time using the props returned by getStaticProps.
+// getStaticProps:
+// - only run at build time
+// - only run on server side
+// - won't be included in client side bundle
+// - on dev mode, runs on client and server side
+export async function getStaticProps(context) {
+  console.log("hi from getStaticProps"); // will be seen on the terminal bc it's on the server side
+  // const data = fetch(coffeeStores)... but we don't need a fetch request here, we already have the coffee stores from the json file
+  return {
+    props: {
+      coffeeStores: coffeeStoresData,
+    }, // will be passed to the page component as props
+  };
+}
+// => So we are writing client side and server side code in the same page file.
+
 // it's the default route bc the file is called index
-export default function Home() {
+export default function Home(props) {
   // console.log("styles for Home", styles);
+  console.log(props);
 
   const handleOnBannerBtnClick = () => {
     console.log("click");
@@ -30,11 +55,24 @@ export default function Home() {
         <div className={styles.heroImage}>
           <Image src="/static/hero-image.png" width={700} height={400} />
         </div>
-        <Card
-          name="DarkHorse Coffee"
-          imgUrl="/static/hero-image.png"
-          href="/coffee-store/darkhorse-coffee"
-        />
+        {props.coffeeStores.length > 0 && (
+          <>
+            <h2 className={styles.heading2}>Toronto stores</h2>
+            <div className={styles.cardLayout}>
+              {props.coffeeStores.map((coffeeStore) => {
+                return (
+                  <Card
+                    key={coffeeStore.id}
+                    name={coffeeStore.name}
+                    imgUrl={coffeeStore.imgUrl}
+                    href={`/coffee-store/${coffeeStore.id}`}
+                    className={styles.card}
+                  />
+                );
+              })}
+            </div>
+          </>
+        )}
       </main>
     </div>
   );
