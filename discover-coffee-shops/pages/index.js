@@ -6,7 +6,7 @@ import Banner from "../components/banner";
 import Card from "../components/card";
 import styles from "../styles/Home.module.css";
 
-import coffeeStoresData from "../data/coffee-stores.json";
+// import coffeeStoresData from "../data/coffee-stores.json";
 
 ////// We use STATIC GENERATION (SSG) (with external data) //////
 // We will pre-render this content usigin static generation. To do that, we will download this content in advance and we will store it a CDN.
@@ -21,10 +21,28 @@ import coffeeStoresData from "../data/coffee-stores.json";
 // - on dev mode, runs on client and server side
 export async function getStaticProps(context) {
   // console.log("hi from getStaticProps"); // will be seen on the terminal bc it's on the server side
-  // const data = fetch(coffeeStores)... but we don't need a fetch request here, we already have the coffee stores from the json file
+
+  const options = {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      Authorization: process.env.FOURSQUARE_API_KEY,
+    },
+  };
+
+  const response = await fetch(
+    "https://api.foursquare.com/v3/places/search?query=coffee&ll=43.65%2C-79.38&limit=6",
+    options
+  );
+  const data = await response.json();
+  console.log("======= DATA ======");
+  console.log(data);
+  console.log("======= END ======");
+
   return {
     props: {
-      coffeeStores: coffeeStoresData,
+      // coffeeStores: coffeeStoresData,
+      coffeeStores: data?.results || [],
     }, // will be passed to the page component as props
   };
 }
@@ -62,10 +80,13 @@ export default function Home(props) {
               {props.coffeeStores.map((coffeeStore) => {
                 return (
                   <Card
-                    key={coffeeStore.id}
+                    key={coffeeStore.fsq_id}
                     name={coffeeStore.name}
-                    imgUrl={coffeeStore.imgUrl}
-                    href={`/coffee-store/${coffeeStore.id}`}
+                    imgUrl={
+                      coffeeStore.imgUrl ||
+                      "https://images.unsplash.com/photo-1498804103079-a6351b050096?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2468&q=80"
+                    }
+                    href={`/coffee-store/${coffeeStore.fsq_id}`}
                     className={styles.card}
                   />
                 );
