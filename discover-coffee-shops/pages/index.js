@@ -1,9 +1,12 @@
 import Head from "next/head";
 import Image from "next/image";
+import { useEffect } from "react";
 // Next.js will download the images as you scroll down
 
 import Banner from "../components/banner";
 import Card from "../components/card";
+import useTrackLocation from "../hooks/use-track-location";
+import { fetchCoffeeStores } from "../lib/coffee-store";
 import styles from "../styles/Home.module.css";
 
 // import coffeeStoresData from "../data/coffee-stores.json";
@@ -22,27 +25,14 @@ import styles from "../styles/Home.module.css";
 export async function getStaticProps(context) {
   // console.log("hi from getStaticProps"); // will be seen on the terminal bc it's on the server side
 
-  const options = {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
-      Authorization: process.env.FOURSQUARE_API_KEY,
-    },
-  };
+  const coffeeStores = await fetchCoffeeStores();
 
-  const response = await fetch(
-    "https://api.foursquare.com/v3/places/search?query=coffee&ll=43.65%2C-79.38&limit=6",
-    options
-  );
-  const data = await response.json();
-  console.log("======= DATA ======");
-  console.log(data);
-  console.log("======= END ======");
+  console.log(coffeeStores);
 
   return {
     props: {
       // coffeeStores: coffeeStoresData,
-      coffeeStores: data?.results || [],
+      coffeeStores,
     }, // will be passed to the page component as props
   };
 }
@@ -53,9 +43,30 @@ export default function Home(props) {
   // console.log("styles for Home", styles);
   // console.log(props);
 
+  const { handleTrackLocation, latLong, locationErrorMsg, isFindingLocation } =
+    useTrackLocation();
+
+  // console.log({ latLong, locationErrorMsg });
+
   const handleOnBannerBtnClick = () => {
-    console.log("click");
+    handleTrackLocation();
   };
+
+  useEffect(() => {
+    async function setCoffeeStoreByLocation() {
+      if (latLong.length) {
+        try {
+          const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 30);
+          console.log({ fetchedCoffeeStores });
+          //set coffee stores
+        } catch (err) {
+          //set error
+          console.log(err);
+        }
+      }
+    }
+    setCoffeeStoreByLocation();
+  }, [latLong]);
 
   return (
     <div className={styles.container}>
@@ -67,32 +78,35 @@ export default function Home(props) {
 
       <main className={styles.main}>
         <Banner
-          buttonText="View stores nearby"
+          buttonText={isFindingLocation ? "Locating..." : "View stores nearby"}
           handleOnClick={handleOnBannerBtnClick}
         />
+        {locationErrorMsg.length > 0 && (
+          <p>Something went wrong: {locationErrorMsg}</p>
+        )}
         <div className={styles.heroImage}>
           <Image src="/static/hero-image.png" width={700} height={400} />
         </div>
         {props.coffeeStores.length > 0 && (
-          <>
+          <div className={styles.sectionWrapper}>
             <h2 className={styles.heading2}>Toronto stores</h2>
             <div className={styles.cardLayout}>
               {props.coffeeStores.map((coffeeStore) => {
                 return (
                   <Card
-                    key={coffeeStore.fsq_id}
+                    key={coffeeStore.id}
                     name={coffeeStore.name}
                     imgUrl={
                       coffeeStore.imgUrl ||
                       "https://images.unsplash.com/photo-1498804103079-a6351b050096?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2468&q=80"
                     }
-                    href={`/coffee-store/${coffeeStore.fsq_id}`}
+                    href={`/coffee-store/${coffeeStore.id}`}
                     className={styles.card}
                   />
                 );
               })}
             </div>
-          </>
+          </div>
         )}
       </main>
     </div>

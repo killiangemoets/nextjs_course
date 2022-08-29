@@ -4,17 +4,24 @@ import Head from "next/head";
 import Image from "next/image";
 import cls from "classnames";
 
-import coffeeStoresData from "../../data/coffee-stores.json";
+// import coffeeStoresData from "../../data/coffee-stores.json";
 
 import styles from "../../styles/coffee-store.module.css";
+import { fetchCoffeeStores } from "../../lib/coffee-store";
 
-export function getStaticProps(staticProps) {
+export async function getStaticProps(staticProps) {
   const params = staticProps.params;
   // console.log(" render params", params);
   // console.log("coffeeStoresData", coffeeStoresData);
+
+  const coffeeStoresAPIData = await fetchCoffeeStores();
+
   return {
     props: {
-      coffeeStore: coffeeStoresData.find((coffeeStore) => {
+      // coffeeStore: coffeeStoresData.find((coffeeStore) => {
+      //   return coffeeStore.id.toString() === params.id; //dynamic id
+      // }),
+      coffeeStore: coffeeStoresAPIData.find((coffeeStore) => {
         return coffeeStore.id.toString() === params.id; //dynamic id
       }),
     },
@@ -28,8 +35,12 @@ export function getStaticProps(staticProps) {
 // - only run on server side
 // - won't be included in client side bundle
 // - on dev mode, runs on client and server side
-export function getStaticPaths() {
-  const paths = coffeeStoresData.map((coffeeStore) => {
+export async function getStaticPaths() {
+  // const paths = coffeeStoresData.map((coffeeStore) => {
+  //   return { params: { id: coffeeStore.id.toString() } };
+  // });
+  const coffeeStoresAPIData = await fetchCoffeeStores();
+  const paths = coffeeStoresAPIData.map((coffeeStore) => {
     return { params: { id: coffeeStore.id.toString() } };
   });
   return {
@@ -55,7 +66,7 @@ const CoffeeStore = (props) => {
     return <div>Loading...</div>;
   }
 
-  const { address, name, neighbourhood, imgUrl } = props.coffeeStore;
+  const { address, name, imgUrl, neighborhood } = props.coffeeStore;
 
   const handleUpvoteButton = () => {
     console.log("handle upvote");
@@ -71,7 +82,7 @@ const CoffeeStore = (props) => {
         <div className={styles.col1}>
           <div className={styles.backToHomeLink}>
             <Link href="/">
-              <a>Back to home</a>
+              <a>← Back to home</a>
               {/* we use the a anchor just for the browser to recognize that this is a link */}
             </Link>
           </div>
@@ -87,14 +98,18 @@ const CoffeeStore = (props) => {
           />
         </div>
         <div className={cls("glass", styles.col2)}>
-          <div className={styles.iconWrapper}>
-            <Image src="/static/icons/place.svg" width="24" height="24" />
-            <p className={styles.text}>{address}</p>
-          </div>
-          <div className={styles.iconWrapper}>
-            <Image src="/static/icons/nearMe.svg" width="24" height="24" />
-            <p>{neighbourhood}</p>
-          </div>
+          {address && (
+            <div className={styles.iconWrapper}>
+              <Image src="/static/icons/place.svg" width="24" height="24" />
+              <p className={styles.text}>{address}</p>
+            </div>
+          )}
+          {neighborhood && (
+            <div className={styles.iconWrapper}>
+              <Image src="/static/icons/nearMe.svg" width="24" height="24" />
+              <p>{neighborhood}</p>
+            </div>
+          )}
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/star.svg" width="24" height="24" />
             <p>10</p>
@@ -111,6 +126,4 @@ const CoffeeStore = (props) => {
 
 export default CoffeeStore;
 
-// admin
-// fsq3IV+EwGo72thjf6Ln8SjlR0mz33pt4qrv29pF/SPuADg=
-// fsq3KLm4Zw8FmT8RiJS9h7TtqrUYJOQU1XG70OTF6DS37Hk=
+// NEXT_PUBLIC_FOURSQUARE_API_KEY2 = fsq3IV+EwGo72thjf6Ln8SjlR0mz33pt4qrv29pF/SPuADg=
