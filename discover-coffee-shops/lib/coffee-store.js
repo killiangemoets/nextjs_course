@@ -16,10 +16,10 @@ const getUrlForCoffeeStore = (latLong, query, limit) => {
   }&v=20220829&limit=${limit}&query=${query}`;
 };
 
-const getListOfCoffeeStoresPhotos = async () => {
+const getListOfCoffeeStoresPhotos = async (numPhotos) => {
   const photos = await unsplash.search.getPhotos({
     query: "coffee shop",
-    perPage: 40,
+    perPage: numPhotos,
   });
   //   console.log(photos);
   const unsplashResults = photos.response.results.map(
@@ -34,7 +34,7 @@ export const fetchCoffeeStores = async (
   latLong = [43.65, -79.38],
   limit = 6
 ) => {
-  const photos = await getListOfCoffeeStoresPhotos();
+  const photos = await getListOfCoffeeStoresPhotos(limit);
 
   //   const options = {
   //     method: "GET",

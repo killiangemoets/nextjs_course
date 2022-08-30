@@ -16,14 +16,16 @@ export async function getStaticProps(staticProps) {
 
   const coffeeStoresAPIData = await fetchCoffeeStores();
 
+  const findCoffeeStoryById = coffeeStoresAPIData.find((coffeeStore) => {
+    return coffeeStore.id.toString() === params.id; //dynamic id
+  });
+
   return {
     props: {
       // coffeeStore: coffeeStoresData.find((coffeeStore) => {
       //   return coffeeStore.id.toString() === params.id; //dynamic id
       // }),
-      coffeeStore: coffeeStoresAPIData.find((coffeeStore) => {
-        return coffeeStore.id.toString() === params.id; //dynamic id
-      }),
+      coffeeStore: findCoffeeStoryById || {},
     },
   };
 }
