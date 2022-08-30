@@ -1,6 +1,6 @@
 import Head from "next/head";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 // Next.js will download the images as you scroll down
 
 import Banner from "../components/banner";
@@ -8,6 +8,7 @@ import Card from "../components/card";
 import useTrackLocation from "../hooks/use-track-location";
 import { fetchCoffeeStores } from "../lib/coffee-store";
 import styles from "../styles/Home.module.css";
+import { ACTION_TYPES, StoreContext } from "../store/store-context";
 
 // import coffeeStoresData from "../data/coffee-stores.json";
 
@@ -43,11 +44,14 @@ export default function Home(props) {
   // console.log("styles for Home", styles);
   // console.log(props);
 
-  const { handleTrackLocation, latLong, locationErrorMsg, isFindingLocation } =
+  const { handleTrackLocation, locationErrorMsg, isFindingLocation } =
     useTrackLocation();
 
-  const [coffeeStoresNearMe, setCoffeeStoresNearMe] = useState("");
+  // const [coffeeStoresNearMe, setCoffeeStoresNearMe] = useState("");
   const [coffeeStoresError, setCoffeeStoresError] = useState(null);
+
+  const { dispatch, state } = useContext(StoreContext);
+  const { coffeeStores: coffeeStoresNearMe, latLong } = state;
 
   // console.log({ latLong, locationErrorMsg });
 
@@ -61,7 +65,11 @@ export default function Home(props) {
         try {
           const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 30);
           console.log({ fetchedCoffeeStores });
-          setCoffeeStoresNearMe(fetchedCoffeeStores);
+          // setCoffeeStoresNearMe(fetchedCoffeeStores);
+          dispatch({
+            type: ACTION_TYPES.SET_COFFEE_STORES,
+            payload: { coffeeStores: fetchedCoffeeStores },
+          });
           //set coffee stores
         } catch (err) {
           //set error

@@ -8,6 +8,9 @@ import cls from "classnames";
 
 import styles from "../../styles/coffee-store.module.css";
 import { fetchCoffeeStores } from "../../lib/coffee-store";
+import { useContext, useEffect, useState } from "react";
+import { StoreContext } from "../../store/store-context";
+import { isEmpty } from "../../utils";
 
 export async function getStaticProps(staticProps) {
   const params = staticProps.params;
@@ -58,17 +61,37 @@ export async function getStaticPaths() {
 // We need to add a fallback. It will tell Next.js what to do if it cannnot find a path.
 // If fallback: false, when Next.j cannot find the content, it will return a 404 page
 
-const CoffeeStore = (props) => {
+const CoffeeStore = (initialProps) => {
   const router = useRouter();
   // console.log("router", router, router.query.id);
-  // console.log(props);
+  // console.log(initialProps);
 
-  // Without router.isFallback if the id is not in the paths, Next.js won't call the getStaticProps function and props.coffeeStore will be undefined
+  // Without router.isFallback if the id is not in the paths, Next.js won't call the getStaticProps function and initialProps.coffeeStore will be undefined
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
 
-  const { address, name, imgUrl, neighborhood } = props.coffeeStore;
+  const id = router.query.id;
+
+  const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
+
+  const {
+    state: { coffeeStores },
+  } = useContext(StoreContext);
+
+  useEffect(() => {
+    if (isEmpty(initialProps.coffeeStore)) {
+      if (coffeeStores.length > 0) {
+        const findCoffeeStoryById = coffeeStores.find((coffeeStore) => {
+          return coffeeStore.id.toString() === id; //dynamic id
+        });
+        setCoffeeStore(findCoffeeStoryById);
+      }
+    }
+  }, [id]);
+
+  // const { address, name, imgUrl, neighborhood } = initialProps.coffeeStore;
+  const { address, name, imgUrl, neighborhood } = coffeeStore;
 
   const handleUpvoteButton = () => {
     console.log("handle upvote");

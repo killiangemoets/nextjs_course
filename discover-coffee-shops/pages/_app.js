@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import StoreProvider from "../store/store-context";
 
 // it's an entry point in our application
 // it provides a wrapper that surrounds all the pages
@@ -6,12 +7,14 @@ import "../styles/globals.css";
 function MyApp({ Component, pageProps }) {
   // return <Component {...pageProps} />;
   return (
-    <div>
-      <Component {...pageProps} />
-      <footer>
-        <p>© 2022 - Coffee Discovering</p>
-      </footer>
-    </div>
+    <StoreProvider>
+      <div>
+        <Component {...pageProps} />
+        <footer>
+          <p>© 2022 - Coffee Discovering</p>
+        </footer>
+      </div>
+    </StoreProvider>
   );
 }
 
