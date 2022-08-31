@@ -26,6 +26,7 @@ import { ACTION_TYPES, StoreContext } from "../store/store-context";
 export async function getStaticProps(context) {
   // console.log("hi from getStaticProps"); // will be seen on the terminal bc it's on the server side
 
+  // BIG NOTE: You should not fetch an API route from "getStaticProps". Instead, you can write the server-side code directly in "getStaticProps'".
   const coffeeStores = await fetchCoffeeStores();
 
   console.log(coffeeStores);
@@ -60,17 +61,28 @@ export default function Home(props) {
   };
 
   useEffect(() => {
+    ////// We use CLIENT SIDE RENDERING (CSR) to render the stores near me //////
+    // For that, we have built a brand new API, a serverless funcion called as getCoffeeStoresByLocation
     async function setCoffeeStoreByLocation() {
       if (latLong.length) {
         try {
-          const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 30);
+          // const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 30);
+          // We now fetch our backend route that we created
+          const response = await fetch(
+            `/api/getCoffeeStoresByLocation?latLong=${latLong}&limit=30`
+          );
+
+          const fetchedCoffeeStores = await response.json();
+
           console.log({ fetchedCoffeeStores });
+
           // setCoffeeStoresNearMe(fetchedCoffeeStores);
+          //set coffee stores
           dispatch({
             type: ACTION_TYPES.SET_COFFEE_STORES,
             payload: { coffeeStores: fetchedCoffeeStores },
           });
-          //set coffee stores
+          setCoffeeStoresError("");
         } catch (err) {
           //set error
           console.log(err);
