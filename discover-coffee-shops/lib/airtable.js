@@ -21,4 +21,15 @@ const getMinifiedRecords = (records) => {
   });
 };
 
-export { table, getMinifiedRecords };
+const findRecordByFilter = async (id) => {
+  const findCoffeeStoreRecords = await table
+    .select({
+      filterByFormula: `id="${id}"`,
+    })
+    .firstPage();
+
+  // if findCoffeStore is empty, it will return an empty array
+  return getMinifiedRecords(findCoffeeStoreRecords);
+};
+
+export { table, getMinifiedRecords, findRecordByFilter };
