@@ -29,7 +29,7 @@ export async function getStaticProps(context) {
   // BIG NOTE: You should not fetch an API route from "getStaticProps". Instead, you can write the server-side code directly in "getStaticProps'".
   const coffeeStores = await fetchCoffeeStores();
 
-  console.log(coffeeStores);
+  // console.log(coffeeStores);
 
   return {
     props: {
@@ -74,7 +74,7 @@ export default function Home(props) {
 
           const fetchedCoffeeStores = await response.json();
 
-          console.log({ fetchedCoffeeStores });
+          // console.log({ fetchedCoffeeStores });
 
           // setCoffeeStoresNearMe(fetchedCoffeeStores);
           //set coffee stores

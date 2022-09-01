@@ -5,7 +5,7 @@ import cls from "classnames";
 import styles from "./card.module.css";
 
 const Card = (props) => {
-  console.log(props);
+  // console.log(props);
   return (
     <Link href={props.href}>
       <a className={styles.cardLink}>

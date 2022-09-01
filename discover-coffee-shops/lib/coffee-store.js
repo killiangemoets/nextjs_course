@@ -5,15 +5,15 @@ const unsplash = createApi({
 });
 
 const getUrlForCoffeeStore = (latLong, query, limit) => {
-  //   return `https://api.foursquare.com/v3/places/search?query=${query}&ll=${latLong[0]}%2C${latLong[1]}&limit=${limit}`;
+  return `https://api.foursquare.com/v3/places/search?query=${query}&ll=${latLong[0]}%2C${latLong[1]}&limit=${limit}`;
 
   //   return `https://api.foursquare.com/v2/venues/search?query=${query}&client_id=${process.env.NEXT_PUBLIC_FOURSQUARE_CLIENT_ID}$client_secret=${process.env.NEXT_PUBLIC_FOURSQUARE_CLIENT_SECRET}&v=20220829&ll=${latLong[0]}%2C${latLong[1]}&limit=${limit}`;
 
-  return `https://api.foursquare.com/v2/venues/search?ll=${latLong.join(
-    ","
-  )}&client_id=${process.env.NEXT_PUBLIC_FOURSQUARE_CLIENT_ID}&client_secret=${
-    process.env.NEXT_PUBLIC_FOURSQUARE_CLIENT_SECRET
-  }&v=20220829&limit=${limit}&query=${query}`;
+  // return `https://api.foursquare.com/v2/venues/search?ll=${latLong.join(
+  //   ","
+  // )}&client_id=${process.env.NEXT_PUBLIC_FOURSQUARE_CLIENT_ID}&client_secret=${
+  //   process.env.NEXT_PUBLIC_FOURSQUARE_CLIENT_SECRET
+  // }&v=20220829&limit=${limit}&query=${query}`;
 };
 
 const getListOfCoffeeStoresPhotos = async (numPhotos) => {
@@ -36,23 +36,27 @@ export const fetchCoffeeStores = async (
 ) => {
   const photos = await getListOfCoffeeStoresPhotos(limit);
 
-  //   const options = {
-  //     method: "GET",
-  //     // mode: "no-cors",
-  //     headers: {
-  //       Accept: "application/json",
-  //       Authorization: "fsq3KLm4Zw8FmT8RiJS9h7TtqrUYJOQU1XG70OTF6DS37Hk=",
-  //       //   "Access-Control-Allow-Origin": "*",
-  //     },
-  //   };
-  //   const response = await fetch(getUrlForCoffeeStore(latLong, "coffee", limit),options);
+  const options = {
+    method: "GET",
+    // mode: "no-cors",
+    headers: {
+      Accept: "application/json",
+      Authorization: "fsq3KLm4Zw8FmT8RiJS9h7TtqrUYJOQU1XG70OTF6DS37Hk=",
+      //   "Access-Control-Allow-Origin": "*",
+    },
+  };
+  const response = await fetch(
+    getUrlForCoffeeStore(latLong, "coffee", limit),
+    options
+  );
 
-  const response = await fetch(getUrlForCoffeeStore(latLong, "coffee", limit));
+  // const response = await fetch(getUrlForCoffeeStore(latLong, "coffee", limit));
 
   const data = await response.json();
 
   console.log("=======DATA======");
   console.log(data);
+  console.log(data.results[0].location);
   console.log("=======DATA======");
 
   return data?.results
@@ -62,10 +66,9 @@ export const fetchCoffeeStores = async (
           id: result.fsq_id,
           name: result.name,
           address: result.location.address,
-          neighborhood:
-            result.location.neighborhood.length > 0
-              ? result.location.neighborhood[0]
-              : "",
+          neighborhood: result.location.neighborhood
+            ? result.location.neighborhood[0]
+            : "",
           imgUrl: photos.length > 0 ? photos[i] : null,
         };
       })
