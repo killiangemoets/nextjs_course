@@ -32,9 +32,9 @@ const favouriteCoffeeStoreById = async (req, res) => {
 
           if (updateRecord) {
             res.json(getMinifiedRecords(updateRecord));
+          } else {
+            res.json(record);
           }
-
-          res.json(record);
         } else {
           res.json({ message: "Coffee store id doesn't exist", id });
         }
