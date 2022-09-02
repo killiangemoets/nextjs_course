@@ -159,9 +159,9 @@ const CoffeeStore = (initialProps) => {
       const dbCoffeeStore = await response.json();
       // console.log(dbCoffeeStore);
 
-      if (dbCoffeeStore && dbCoffeeStore.length > 0) {
-        setVotingCount((count) => count + 1);
-      }
+      // if (dbCoffeeStore && dbCoffeeStore.length > 0) {
+      setVotingCount((count) => count + 1);
+      // }
     } catch (err) {
       console.log("Error upvoting the coffee store", err);
     }
