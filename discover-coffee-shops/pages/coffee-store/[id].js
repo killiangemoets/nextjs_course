@@ -147,6 +147,7 @@ const CoffeeStore = (initialProps) => {
   }, [id, initialProps, initialProps.coffeeStore]);
 
   const handleUpvoteButton = async () => {
+    console.log("vote");
     setVotingCount((count) => count + 1);
     try {
       const response = await fetch("/api/favouriteCoffeeStoreById", {
