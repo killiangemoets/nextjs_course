@@ -54,10 +54,10 @@ export const fetchCoffeeStores = async (
 
   const data = await response.json();
 
-  console.log("=======DATA======");
-  console.log(data);
-  console.log(data.results[0].location);
-  console.log("=======DATA======");
+  // console.log("=======DATA======");
+  // console.log(data);
+  // console.log(data.results[0].location);
+  // console.log("=======DATA======");
 
   return data?.results
     ? data.results.map((result, i) => {

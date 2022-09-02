@@ -80,15 +80,17 @@ const CoffeeStore = (initialProps) => {
   // const { address, name, imgUrl, neighborhood } = initialProps.coffeeStore;
   const { address, name, imgUrl, neighborhood } = coffeeStore;
 
-  const [votingCount, setVotingCount] = useState(1);
+  const [votingCount, setVotingCount] = useState(0);
 
   const fetcher = (url) => fetch(url).then((res) => res.json());
+
+  //why using SWR? When a user upvote a coffee store, all the other users on the same page will also see the coffe store has been upvoted, i.e when a user (from somewhere) upvote a coffee store, the data are refreshed
   const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
-  console.log("DATA", data);
+  // console.log("DATA", data);
 
   useEffect(() => {
     if (data && data.length > 0) {
-      console.log("data from SWR", data);
+      // console.log("data from SWR", data);
       setCoffeeStore(data[0]);
       setVotingCount(data[0].voting);
     }
@@ -144,9 +146,25 @@ const CoffeeStore = (initialProps) => {
     }
   }, [id, initialProps, initialProps.coffeeStore]);
 
-  const handleUpvoteButton = () => {
-    // console.log("handle upvote");
-    setVotingCount((count) => count + 1);
+  const handleUpvoteButton = async () => {
+    try {
+      const response = await fetch("/api/favouriteCoffeeStoreById", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      const dbCoffeeStore = await response.json();
+      // console.log(dbCoffeeStore);
+
+      if (dbCoffeeStore && dbCoffeeStore.length > 0) {
+        setVotingCount((count) => count + 1);
+      }
+    } catch (err) {
+      console.log("Error upvoting the coffee store", err);
+    }
   };
 
   return (

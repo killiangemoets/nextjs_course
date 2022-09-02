@@ -10,7 +10,7 @@ const getCoffeeStoresByLocation = async (req, res) => {
 
     const latLongArray = latLong.split(",");
 
-    console.log(latLongArray, limit);
+    // console.log(latLongArray, limit);
 
     const response = await fetchCoffeeStores(latLongArray, limit);
 
