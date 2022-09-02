@@ -147,6 +147,7 @@ const CoffeeStore = (initialProps) => {
   }, [id, initialProps, initialProps.coffeeStore]);
 
   const handleUpvoteButton = async () => {
+    setVotingCount((count) => count + 1);
     try {
       const response = await fetch("/api/favouriteCoffeeStoreById", {
         method: "PUT",
@@ -160,7 +161,7 @@ const CoffeeStore = (initialProps) => {
       // console.log(dbCoffeeStore);
 
       // if (dbCoffeeStore && dbCoffeeStore.length > 0) {
-      setVotingCount((count) => count + 1);
+      // setVotingCount((count) => count + 1);
       // }
     } catch (err) {
       console.log("Error upvoting the coffee store", err);
