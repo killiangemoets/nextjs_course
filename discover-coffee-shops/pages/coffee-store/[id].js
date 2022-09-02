@@ -4,6 +4,8 @@ import Head from "next/head";
 import Image from "next/image";
 import cls from "classnames";
 
+import useSWR from "swr";
+
 // import coffeeStoresData from "../../data/coffee-stores.json";
 
 import styles from "../../styles/coffee-store.module.css";
@@ -75,6 +77,27 @@ const CoffeeStore = (initialProps) => {
 
   const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
 
+  // const { address, name, imgUrl, neighborhood } = initialProps.coffeeStore;
+  const { address, name, imgUrl, neighborhood } = coffeeStore;
+
+  const [votingCount, setVotingCount] = useState(1);
+
+  const fetcher = (url) => fetch(url).then((res) => res.json());
+  const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
+  console.log("DATA", data);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      console.log("data from SWR", data);
+      setCoffeeStore(data[0]);
+      setVotingCount(data[0].voting);
+    }
+  }, [data]);
+
+  if (error) {
+    return <div>Something went wrong retrieving coffee store page</div>;
+  }
+
   const {
     state: { coffeeStores },
   } = useContext(StoreContext);
@@ -98,7 +121,7 @@ const CoffeeStore = (initialProps) => {
       });
 
       const dbCoffeeStore = await response.json();
-      console.log(dbCoffeeStore);
+      // console.log(dbCoffeeStore);
     } catch (err) {
       console.log("Error creating coffee store", err);
     }
@@ -121,13 +144,8 @@ const CoffeeStore = (initialProps) => {
     }
   }, [id, initialProps, initialProps.coffeeStore]);
 
-  // const { address, name, imgUrl, neighborhood } = initialProps.coffeeStore;
-  const { address, name, imgUrl, neighborhood } = coffeeStore;
-
-  const [votingCount, setVotingCount] = useState(1);
-
   const handleUpvoteButton = () => {
-    console.log("handle upvote");
+    // console.log("handle upvote");
     setVotingCount((count) => count + 1);
   };
 
@@ -166,12 +184,12 @@ const CoffeeStore = (initialProps) => {
           {neighborhood && (
             <div className={styles.iconWrapper}>
               <Image src="/static/icons/nearMe.svg" width="24" height="24" />
-              <p>{neighborhood}</p>
+              <p className={styles.text}>{neighborhood}</p>
             </div>
           )}
           <div className={styles.iconWrapper}>
             <Image src="/static/icons/star.svg" width="24" height="24" />
-            <p>{votingCount}</p>
+            <p className={styles.text}>{votingCount}</p>
           </div>
 
           <button className={styles.upvoteButton} onClick={handleUpvoteButton}>
