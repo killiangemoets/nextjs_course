@@ -2,9 +2,31 @@ import Head from "next/head";
 import Banner from "../components/banner/banner";
 import Navbar from "../components/nav/navbar";
 import styles from "../styles/Home.module.css";
-import Card from "../components/card/card";
+import SectionCards from "../components/card/section-cards";
+import { getVideos } from "../lib/video";
 
-export default function Home() {
+// SERVER SIDE RENDERING
+// - can only be exported from a page file
+// - meant for all routes
+
+// getServersideProps:
+// - only runs on server side
+// - won't be included in client bundle (bc it's oversight code, it's only going to run on the server)
+// - on dev, runs on client and server side
+
+// Page is generated on each request
+export async function getServerSideProps() {
+  // Fetch data from external API
+  const disneyVideos = getVideos();
+
+  // Pass data to the page via props
+  return { props: { disneyVideos } };
+}
+
+export default function Home(props) {
+  // const disneyVideos = getVideos();
+  const { disneyVideos } = props;
+
   return (
     <div className={styles.container}>
       <Head>
@@ -17,10 +39,11 @@ export default function Home() {
         title="Clifford the red dog"
         subTitle="a very cute dog"
         imgUrl="/static/clifford.jpg"
-      />{" "}
-      <Card imgUrl="/static/clifford.jpg" size="large" />
-      <Card imgUrl="/static/clifford.jpg" size="medium" />
-      <Card imgUrl="/static/clifford.jpg" size="small" />
+      />
+      <div className={styles.sectionWrapper}>
+        <SectionCards title="Disney" videos={disneyVideos} size="large" />
+        <SectionCards title="Disney" videos={disneyVideos} size="medium" />
+      </div>
     </div>
   );
 }
