@@ -5,6 +5,8 @@ import styles from "../styles/Home.module.css";
 import SectionCards from "../components/card/section-cards";
 import { getPopularVideos, getVideos } from "../lib/video";
 
+import { magic } from "../lib/magic-client";
+
 // SERVER SIDE RENDERING
 // - can only be exported from a page file
 // - meant for all routes
@@ -41,7 +43,7 @@ export default function Home(props) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className={styles.main}>
-        <Navbar username="kiki@gmail.com" />
+        <Navbar />
         <Banner
           title="Clifford the red dog"
           subTitle="a very cute dog"
@@ -61,6 +63,3 @@ export default function Home(props) {
     </div>
   );
 }
-
-// pk_live_77AA84573DF7C5DF
-// sk_live_CEBACDA174DFE88E
