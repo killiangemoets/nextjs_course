@@ -7,7 +7,7 @@ import { getPopularVideos, getVideos } from "../lib/video";
 
 import { magic } from "../lib/magic-client";
 
-// SERVER SIDE RENDERING
+// SERVER SIDE RENDERING (SSR)
 // - can only be exported from a page file
 // - meant for all routes
 
@@ -45,6 +45,7 @@ export default function Home(props) {
       <div className={styles.main}>
         <Navbar />
         <Banner
+          videoId="4zH5iYM4wJo"
           title="Clifford the red dog"
           subTitle="a very cute dog"
           imgUrl="/static/clifford.jpg"

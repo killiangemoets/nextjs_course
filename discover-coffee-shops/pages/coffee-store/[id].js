@@ -84,7 +84,7 @@ const CoffeeStore = (initialProps) => {
 
   const fetcher = (url) => fetch(url).then((res) => res.json());
 
-  //why using SWR? When a user upvote a coffee store, all the other users on the same page will also see the coffe store has been upvoted, i.e when a user (from somewhere) upvote a coffee store, the data are refreshed
+  //why using SWR? When a user upvote a coffee store, all the other users on the same page will also see the coffee store has been upvoted, i.e when a user (from somewhere) upvote a coffee store, the data are refreshed
   const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
   // console.log("DATA", data);
 
