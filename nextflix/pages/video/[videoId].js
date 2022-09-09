@@ -1,28 +1,68 @@
 import { useRouter } from "next/router";
 import Modal from "react-modal";
 import styles from "../../styles/Video.module.css";
+import Navbar from "../../components/nav/navbar";
 import clsx from "classnames";
+import { getYoutubeVideoById } from "../../lib/video";
 
 Modal.setAppElement("#__next");
 
-const Video = () => {
+export async function getStaticProps(staticProps) {
+  // const video = {
+  //   title: "Hi cute dog",
+  //   publishTime: "1990-01-01",
+  //   description: "A big red dog that is super cute, can he get any bigger? ",
+  //   channelTitle: "Paramount Pictures",
+  //   viewCount: 10000,
+  // };
+
+  const videoId = staticProps.params.videoId;
+
+  const videoArr = await getYoutubeVideoById(videoId);
+  // const res = await fetch("https://.../posts");
+  // const posts = await res.json();
+
+  return {
+    props: {
+      video: videoArr.length > 0 ? videoArr[0] : {},
+    },
+    // Next.js will attempt to re-generate the page:
+    // - When a request comes in
+    // - At most once every 10 seconds
+    revalidate: 10, // In seconds
+  };
+}
+
+export async function getStaticPaths() {
+  // const res = await fetch("https://.../posts");
+  // const posts = await res.json();
+
+  const listOfVideos = ["mYfJxlgR2jw", "4zH5iYM4wJo", "KCPEHsAViiQ"];
+  const paths = listOfVideos.map((videoId) => ({
+    params: { videoId },
+  }));
+  // We'll pre-render only these paths at build time.
+  // { fallback: blocking } will server-render pages
+  // on-demand if the path doesn't exist.
+  return { paths, fallback: "blocking" };
+}
+
+const Video = ({ video }) => {
   const router = useRouter();
   //   console.log({ router });
 
-  const video = {
-    title: "Hi cute dog",
-    publishTime: "1990-01-01",
-    description:
-      "A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger? A big red dog that is super cute, can he get any bigger?",
-    channelTitle: "Paramount Pictures",
-    viewCount: 10000,
-  };
-
-  const { title, publishTime, description, channelTitle, viewCount } = video;
+  const {
+    title,
+    publishTime,
+    description,
+    channelTitle,
+    statistics: { viewCount } = { viewCount: 0 },
+  } = video;
 
   return (
     <div className={styles.container}>
       {/* video page {router.query.videoId} */}
+      <Navbar />
       <Modal
         isOpen={true}
         contentLabel="Watch the video"
