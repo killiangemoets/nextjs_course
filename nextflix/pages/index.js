@@ -5,7 +5,7 @@ import styles from "../styles/Home.module.css";
 import SectionCards from "../components/card/section-cards";
 import { getPopularVideos, getVideos } from "../lib/video";
 
-import { magic } from "../lib/magic-client";
+// import { magic } from "../lib/magic-client";
 
 // SERVER SIDE RENDERING (SSR)
 // - can only be exported from a page file
