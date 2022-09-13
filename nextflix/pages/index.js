@@ -4,6 +4,7 @@ import Navbar from "../components/nav/navbar";
 import styles from "../styles/Home.module.css";
 import SectionCards from "../components/card/section-cards";
 import { getPopularVideos, getVideos } from "../lib/video";
+// import { startFetchMyQuery } from "../lib/db/hasura";
 
 // import { magic } from "../lib/magic-client";
 
@@ -34,6 +35,8 @@ export default function Home(props) {
   // const disneyVideos = getVideos();
   const { disneyVideos, productivityVideos, travelVideos, popularVideos } =
     props;
+
+  // startFetchMyQuery();
 
   return (
     <div className={styles.container}>

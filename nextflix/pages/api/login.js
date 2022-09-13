@@ -1,5 +1,7 @@
 import { magicAdmin } from "../../lib/magic";
 import jwt from "jsonwebtoken";
+import { isNewUser, createNewUser } from "../../lib/db/hasura";
+import { setTokenCookie } from "../../lib/cookies";
 
 export default async function login(req, res) {
   if (req.method === "POST") {
@@ -7,11 +9,9 @@ export default async function login(req, res) {
       //get the token
       const auth = req.headers?.authorization;
       const didToken = auth ? auth.substr(7) : "";
-      console.log({ didToken });
-
+      console.log(didToken);
       //invoke magics
       const metadata = await magicAdmin.users.getMetadataByToken(didToken);
-      console.log({ metadata });
 
       // create jwt
       const token = jwt.sign(
@@ -25,9 +25,16 @@ export default async function login(req, res) {
             "x-hasura-user-id": `${metadata.issuer}`,
           },
         },
-        "thisisasecreeeeeeeet11263163366137Bssddfger1344234"
+        process.env.JWT_SECRET
       );
-      console.log({ token });
+
+      //Check if user exist
+      const isNewUserQuery = await isNewUser(token, metadata.issuer);
+
+      isNewUserQuery && (await createNewUser(token, metadata));
+
+      // set the cookie
+      setTokenCookie(token, res);
 
       res.send({ done: true });
     } catch (error) {

@@ -34,28 +34,40 @@ const Login = () => {
   const handleLoginWithEmail = async (e) => {
     e.preventDefault();
     if (email) {
-      if (email === "kilgem@live.fr") {
-        setIsLoading(true);
-        //route to dashboard
+      // if (email === "kilgem@live.fr") {
+      setIsLoading(true);
+      //route to dashboard
 
-        // log in a user by their email
-        try {
-          const didToken = await magic.auth.loginWithMagicLink({
-            email,
+      // log in a user by their email
+      try {
+        const didToken = await magic.auth.loginWithMagicLink({
+          email,
+        });
+        console.log({ didToken });
+        // setIsLoading(false);
+        if (didToken) {
+          const response = await fetch("/api/login", {
+            method: "POST",
+            header: {
+              Authorization: `Bearer ${didToken}`,
+              "Content-Type": "application/json",
+            },
           });
-          console.log({ didToken });
-          // setIsLoading(false);
-          if (didToken) {
-            router.push("/");
+          const loggedInResponse = await response.json();
+
+          if (loggedInResponse) {
+            console.log({ loggedInResponse });
           }
-        } catch (error) {
-          // Handle errors if required!
-          console.log("Something went wrong logging in", error);
-          setIsLoading(false);
+          // router.push("/");
         }
-      } else {
-        setUserMsg("Something went wrong logging in");
+      } catch (error) {
+        // Handle errors if required!
+        console.log("Something went wrong logging in", error);
+        setIsLoading(false);
       }
+      // } else {
+      //   setUserMsg("Something went wrong logging in");
+      // }
     } else {
       //show user message
       setUserMsg("Enter a valid email address");
