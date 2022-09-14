@@ -5,6 +5,10 @@ import Navbar from "../../components/nav/navbar";
 import clsx from "classnames";
 import { getYoutubeVideoById } from "../../lib/video";
 
+import Like from "../../components/icons/like-icon";
+import DisLike from "../../components/icons/dislike-icon";
+import { useState } from "react";
+
 Modal.setAppElement("#__next");
 
 export async function getStaticProps(staticProps) {
@@ -59,6 +63,17 @@ const Video = ({ video }) => {
     statistics: { viewCount } = { viewCount: 0 },
   } = video;
 
+  const [toggleLike, setToggleLike] = useState(false);
+  const [toggleDisLike, setToggleDisLike] = useState(false);
+
+  const handleToggleLike = () => {
+    setToggleLike(!toggleLike);
+    setToggleDisLike(toggleLike);
+  };
+  const handleToggleDisLike = () => {
+    setToggleDisLike(!toggleDisLike);
+    setToggleLike(toggleDisLike);
+  };
   return (
     <div className={styles.container}>
       {/* video page {router.query.videoId} */}
@@ -70,15 +85,32 @@ const Video = ({ video }) => {
         overlayClassName={styles.overlay}
         className={styles.modal}
       >
-        <iframe
-          id="ytplayer"
-          className={styles.videoPlayer}
-          type="text/html"
-          width="100%"
-          height="360"
-          src={`https://www.youtube.com/embed/${router.query.videoId}?autoplay=0&origin=http://example.com&controls=0&rel=0`}
-          frameborder="0"
-        ></iframe>
+        <div className={styles.iframeWrapper}>
+          <iframe
+            id="ytplayer"
+            className={styles.videoPlayer}
+            type="text/html"
+            width="100%"
+            height="360"
+            src={`https://www.youtube.com/embed/${router.query.videoId}?autoplay=0&origin=http://example.com&controls=0&rel=0`}
+            frameborder="0"
+          ></iframe>
+
+          <div className={styles.likeDislikeBtnWrapper}>
+            <div className={styles.likeBtnWrapper}>
+              <button onClick={handleToggleLike}>
+                <div className={styles.btnWrapper}>
+                  <Like selected={toggleLike} />
+                </div>
+              </button>
+            </div>
+            <button onClick={handleToggleDisLike}>
+              <div className={styles.btnWrapper}>
+                <DisLike selected={toggleDisLike} />
+              </div>
+            </button>
+          </div>
+        </div>
 
         <div className={styles.modalBody}>
           <div className={styles.modalBodyContent}>
