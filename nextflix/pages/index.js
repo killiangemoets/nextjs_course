@@ -3,7 +3,11 @@ import Banner from "../components/banner/banner";
 import Navbar from "../components/nav/navbar";
 import styles from "../styles/Home.module.css";
 import SectionCards from "../components/card/section-cards";
-import { getPopularVideos, getVideos } from "../lib/video";
+import {
+  getPopularVideos,
+  getVideos,
+  getWatchItAgainVideos,
+} from "../lib/video";
 // import { startFetchMyQuery } from "../lib/db/hasura";
 
 // import { magic } from "../lib/magic-client";
@@ -25,9 +29,21 @@ export async function getServerSideProps() {
   const travelVideos = await getVideos("travel");
   const popularVideos = await getPopularVideos();
 
+  const userId = "did:ethr:0x277EEb9780012626245BBc7E3d625067397C8CF5";
+  const token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiJkaWQ6ZXRocjoweDI3N0VFYjk3ODAwMTI2MjYyNDVCQmM3RTNkNjI1MDY3Mzk3QzhDRjUiLCJwdWJsaWNBZGRyZXNzIjoiMHgyNzdFRWI5NzgwMDEyNjI2MjQ1QkJjN0UzZDYyNTA2NzM5N0M4Q0Y1IiwiZW1haWwiOiJraWxnZW1AbGl2ZS5mciIsIm9hdXRoUHJvdmlkZXIiOm51bGwsInBob25lTnVtYmVyIjpudWxsLCJpYXQiOjE2NjMwODEwNDYsImV4cCI6MTY2MzY4NTg0NiwiaHR0cHM6Ly9oYXN1cmEuaW8vand0L2NsYWltcyI6eyJ4LWhhc3VyYS1hbGxvd2VkLXJvbGVzIjpbInVzZXIiLCJhZG1pbiJdLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJ1c2VyIiwieC1oYXN1cmEtdXNlci1pZCI6ImRpZDpldGhyOjB4Mjc3RUViOTc4MDAxMjYyNjI0NUJCYzdFM2Q2MjUwNjczOTdDOENGNSJ9fQ.gmjkBawwFBFwxKBQYYC3fUetIQbaABgu71ekHb8RQeA";
+  const watchItAgainVideos = await getWatchItAgainVideos(userId, token);
+
+  console.log({ watchItAgainVideos });
+
   // Pass data to the page via props
   return {
-    props: { disneyVideos, productivityVideos, travelVideos, popularVideos },
+    props: {
+      disneyVideos,
+      productivityVideos,
+      travelVideos,
+      popularVideos,
+    },
   };
 }
 
