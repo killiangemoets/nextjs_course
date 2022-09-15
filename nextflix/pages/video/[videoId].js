@@ -7,7 +7,7 @@ import { getYoutubeVideoById } from "../../lib/video";
 
 import Like from "../../components/icons/like-icon";
 import DisLike from "../../components/icons/dislike-icon";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 Modal.setAppElement("#__next");
 
@@ -63,17 +63,66 @@ const Video = ({ video }) => {
     statistics: { viewCount } = { viewCount: 0 },
   } = video;
 
+  const videoId = router.query.videoId;
+
   const [toggleLike, setToggleLike] = useState(false);
   const [toggleDisLike, setToggleDisLike] = useState(false);
 
-  const handleToggleLike = () => {
-    setToggleLike(!toggleLike);
+  useEffect(() => {
+    const handleLikeDislikeService = async () => {
+      const response = await fetch(`/api/stats?videoId=${videoId}`, {
+        method: "GET",
+      });
+      const data = await response.json();
+
+      // console.log({ data });
+
+      if (data.length > 0) {
+        const favourited = data[0].favourited;
+        if (favourited === 1) {
+          setToggleLike(true);
+        } else if (favourited === 0) {
+          setToggleDisLike(true);
+        }
+      }
+    };
+    handleLikeDislikeService();
+  }, []);
+
+  const runRatingService = async (favourited) => {
+    const response = await fetch("/api/stats", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        videoId,
+        favourited,
+      }),
+    });
+
+    return await response.json();
+  };
+
+  const handleToggleLike = async () => {
+    const val = !toggleLike;
+    setToggleLike(val);
     setToggleDisLike(toggleLike);
+
+    const favourited = val ? 1 : 0;
+    const response = await runRatingService(favourited);
+    console.log({ response });
   };
-  const handleToggleDisLike = () => {
-    setToggleDisLike(!toggleDisLike);
+
+  const handleToggleDisLike = async () => {
+    const val = !toggleDisLike;
+    setToggleDisLike(val);
     setToggleLike(toggleDisLike);
+    const favourited = val ? 0 : 1;
+    const response = await runRatingService(favourited);
+    console.log({ response });
   };
+
   return (
     <div className={styles.container}>
       {/* video page {router.query.videoId} */}
@@ -92,7 +141,7 @@ const Video = ({ video }) => {
             type="text/html"
             width="100%"
             height="360"
-            src={`https://www.youtube.com/embed/${router.query.videoId}?autoplay=0&origin=http://example.com&controls=0&rel=0`}
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=0&origin=http://example.com&controls=0&rel=0`}
             frameborder="0"
           ></iframe>
 
