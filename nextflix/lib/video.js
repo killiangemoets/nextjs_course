@@ -1,5 +1,5 @@
 import videoTestData from "../data/videos.json";
-import { getWatchedVideos } from "./db/hasura";
+import { getMyListVideos, getWatchedVideos } from "./db/hasura";
 
 const fetchVideos = async (url) => {
   const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
@@ -36,6 +36,7 @@ export const getCommonVideos = async (url) => {
     return data.items.map((item) => {
       const id = item?.id?.videoId || item.id;
       return {
+        id,
         title: item.snippet.title,
         // imgUrl: item.snippet.thumbnails.high.url,
         imgUrl: `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
@@ -77,4 +78,16 @@ export const getWatchItAgainVideos = async (userId, token) => {
       imgUrl: `https://i.ytimg.com/vi/${video.videoId}/maxresdefault.jpg`,
     };
   });
+};
+
+export const getMyList = async (userId, token) => {
+  const videos = await getMyListVideos(userId, token);
+  return (
+    videos?.map((video) => {
+      return {
+        id: video.videoId,
+        imgUrl: `https://i.ytimg.com/vi/${video.videoId}/maxresdefault.jpg`,
+      };
+    }) || []
+  );
 };
