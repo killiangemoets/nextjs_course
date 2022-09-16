@@ -22,7 +22,7 @@ import {
 // - on dev, runs on client and server side
 
 // Page is generated on each request
-export async function getServerSideProps() {
+export async function getServerSideProps(context) {
   // Fetch data from external API
   const disneyVideos = await getVideos("disney trailer");
   const productivityVideos = await getVideos("productivity");
@@ -30,8 +30,12 @@ export async function getServerSideProps() {
   const popularVideos = await getPopularVideos();
 
   const userId = "did:ethr:0x277EEb9780012626245BBc7E3d625067397C8CF5";
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiJkaWQ6ZXRocjoweDI3N0VFYjk3ODAwMTI2MjYyNDVCQmM3RTNkNjI1MDY3Mzk3QzhDRjUiLCJwdWJsaWNBZGRyZXNzIjoiMHgyNzdFRWI5NzgwMDEyNjI2MjQ1QkJjN0UzZDYyNTA2NzM5N0M4Q0Y1IiwiZW1haWwiOiJraWxnZW1AbGl2ZS5mciIsIm9hdXRoUHJvdmlkZXIiOm51bGwsInBob25lTnVtYmVyIjpudWxsLCJpYXQiOjE2NjMwODEwNDYsImV4cCI6MTY2MzY4NTg0NiwiaHR0cHM6Ly9oYXN1cmEuaW8vand0L2NsYWltcyI6eyJ4LWhhc3VyYS1hbGxvd2VkLXJvbGVzIjpbInVzZXIiLCJhZG1pbiJdLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJ1c2VyIiwieC1oYXN1cmEtdXNlci1pZCI6ImRpZDpldGhyOjB4Mjc3RUViOTc4MDAxMjYyNjI0NUJCYzdFM2Q2MjUwNjczOTdDOENGNSJ9fQ.gmjkBawwFBFwxKBQYYC3fUetIQbaABgu71ekHb8RQeA";
+  // const token =
+  //   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3N1ZXIiOiJkaWQ6ZXRocjoweDI3N0VFYjk3ODAwMTI2MjYyNDVCQmM3RTNkNjI1MDY3Mzk3QzhDRjUiLCJwdWJsaWNBZGRyZXNzIjoiMHgyNzdFRWI5NzgwMDEyNjI2MjQ1QkJjN0UzZDYyNTA2NzM5N0M4Q0Y1IiwiZW1haWwiOiJraWxnZW1AbGl2ZS5mciIsIm9hdXRoUHJvdmlkZXIiOm51bGwsInBob25lTnVtYmVyIjpudWxsLCJpYXQiOjE2NjMwODEwNDYsImV4cCI6MTY2MzY4NTg0NiwiaHR0cHM6Ly9oYXN1cmEuaW8vand0L2NsYWltcyI6eyJ4LWhhc3VyYS1hbGxvd2VkLXJvbGVzIjpbInVzZXIiLCJhZG1pbiJdLCJ4LWhhc3VyYS1kZWZhdWx0LXJvbGUiOiJ1c2VyIiwieC1oYXN1cmEtdXNlci1pZCI6ImRpZDpldGhyOjB4Mjc3RUViOTc4MDAxMjYyNjI0NUJCYzdFM2Q2MjUwNjczOTdDOENGNSJ9fQ.gmjkBawwFBFwxKBQYYC3fUetIQbaABgu71ekHb8RQeA";
+
+  const token = context.req ? context.req?.cookies.token : null;
+  console.log({ token });
+
   const watchItAgainVideos = await getWatchItAgainVideos(userId, token);
 
   console.log({ watchItAgainVideos });
@@ -43,14 +47,20 @@ export async function getServerSideProps() {
       productivityVideos,
       travelVideos,
       popularVideos,
+      watchItAgainVideos,
     },
   };
 }
 
 export default function Home(props) {
   // const disneyVideos = getVideos();
-  const { disneyVideos, productivityVideos, travelVideos, popularVideos } =
-    props;
+  const {
+    disneyVideos,
+    productivityVideos,
+    travelVideos,
+    popularVideos,
+    watchItAgainVideos,
+  } = props;
 
   // startFetchMyQuery();
 
@@ -71,6 +81,11 @@ export default function Home(props) {
         />
         <div className={styles.sectionWrapper}>
           <SectionCards title="Disney" videos={disneyVideos} size="large" />
+          <SectionCards
+            title="Watch it again"
+            videos={watchItAgainVideos}
+            size="small"
+          />
           <SectionCards title="Travel" videos={travelVideos} size="small" />
           <SectionCards
             title="Productivity"

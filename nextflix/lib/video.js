@@ -37,8 +37,8 @@ export const getCommonVideos = async (url) => {
       const id = item?.id?.videoId || item.id;
       return {
         title: item.snippet.title,
-        imgUrl: item.snippet.thumbnails.high.url,
-        id,
+        // imgUrl: item.snippet.thumbnails.high.url,
+        imgUrl: `https://i.ytimg.com/vi/${id}/maxresdefault.jpg`,
         description: item.snippet.description,
         publishTime: item.snippet.publishedAt,
         channelTitle: item.snippet.channelTitle,
@@ -70,5 +70,11 @@ export const getYoutubeVideoById = (videoId) => {
 
 export const getWatchItAgainVideos = async (userId, token) => {
   const videos = await getWatchedVideos(userId, token);
-  return videos;
+
+  return videos?.map((video) => {
+    return {
+      id: video.videoId,
+      imgUrl: `https://i.ytimg.com/vi/${video.videoId}/maxresdefault.jpg`,
+    };
+  });
 };
