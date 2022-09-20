@@ -28,7 +28,7 @@ import { redirectUser } from "../utils/redirectUser";
 export async function getServerSideProps(context) {
   // const token = context.req ? context.req?.cookies.token : null;
   // const userId = verifyToken(token);
-  const { userId, token } = redirectUser(context);
+  const { userId, token } = await redirectUser(context);
 
   if (!userId) {
     return {
