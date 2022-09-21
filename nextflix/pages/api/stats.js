@@ -18,7 +18,7 @@ export default async function stats(req, res) {
       if (videoId) {
         // const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
         // const userId = decodedToken.issuer;
-        const userId = verifyToken(token);
+        const userId = await verifyToken(token);
         const findVideo = await findVideoIdByUser(token, userId, videoId);
 
         const doesStatsExist = findVideo?.length > 0;

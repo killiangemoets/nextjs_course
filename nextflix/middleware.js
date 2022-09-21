@@ -10,7 +10,7 @@ import { verifyToken } from "./lib/utils";
 // }
 
 export async function middleware(req, ev) {
-  console.log("hello from middleware");
+  // console.log("hello from middleware");
   const token = req ? req.cookies?.get("token") : null;
   const userId = await verifyToken(token);
   const { pathname } = req.nextUrl;
