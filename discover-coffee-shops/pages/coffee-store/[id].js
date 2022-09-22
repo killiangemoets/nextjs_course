@@ -61,7 +61,7 @@ export async function getStaticPaths() {
   };
 }
 // We need to add a fallback. It will tell Next.js what to do if it cannnot find a path.
-// If fallback: false, when Next.j cannot find the content, it will return a 404 page
+// If fallback: false, when Next.js cannot find the content, it will return a 404 page
 
 const CoffeeStore = (initialProps) => {
   const router = useRouter();

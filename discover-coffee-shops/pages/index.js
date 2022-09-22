@@ -13,7 +13,7 @@ import { ACTION_TYPES, StoreContext } from "../store/store-context";
 // import coffeeStoresData from "../data/coffee-stores.json";
 
 ////// We use STATIC GENERATION (SSG) (with external data) //////
-// We will pre-render this content usigin static generation. To do that, we will download this content in advance and we will store it a CDN.
+// We will pre-render this content using static generation. To do that, we will download this content in advance and we will store it a CDN.
 // Storing in a CDN is taking care of by Next.js, but we need to implement a function that would allow us to store the coffee shops on the CDN
 // => So when someone come to the app and try to access these coffee shops, they are going to get the cached version,i.e. the pre-rendered version and Next.js is not going to redownload this data
 
